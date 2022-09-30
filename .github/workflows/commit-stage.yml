@@ -64,9 +64,7 @@ jobs:
           # Workaround for https://github.com/actions/runner-images/issues/6283
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           brew install buildpacks/tap/pack
-
-          cd convention-server
-          pack build ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }} .
+          pack build ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }} --path convention-server --builder paketobuildpacks/builder:tiny
       - name: OCI image vulnerability scanning
         uses: anchore/scan-action@v3.3.0
         id: scan
