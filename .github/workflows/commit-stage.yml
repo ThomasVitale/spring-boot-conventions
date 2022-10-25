@@ -28,7 +28,7 @@ jobs:
           fail-build: true
           severity-cutoff: critical
       - name: Upload vulnerability report
-        uses: github/codeql-action/upload-sarif@v2.11.2
+        uses: github/codeql-action/upload-sarif@v2.1.28
         if: success() || failure()
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
@@ -72,7 +72,7 @@ jobs:
           fail-build: true
           severity-cutoff: critical
       - name: Upload vulnerability report
-        uses: github/codeql-action/upload-sarif@v2.11.2
+        uses: github/codeql-action/upload-sarif@v2.1.28
         if: success() || failure()
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
