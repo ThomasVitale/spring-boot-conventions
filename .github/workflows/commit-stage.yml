@@ -9,75 +9,88 @@ env:
 jobs:
   build:
     name: Build and Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
       security-events: write
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v3.3.0
+
       - name: Set up Go
-        uses: actions/setup-go@v3.3.1
+        uses: actions/setup-go@v3.5.0
         with:
           go-version: 1.19
-      - name: Code vulnerability scanning
-        uses: anchore/scan-action@v3.3.0
-        id: scan
+
+      - name: Source code vulnerability scanning
+        uses: aquasecurity/trivy-action@master
         with:
-          path: convention-server
-          fail-build: true
-          severity-cutoff: critical
+          scan-type: 'fs'
+          scan-ref: 'convention-server'
+          format: 'sarif'
+          output: 'trivy-results-source-code.sarif'
+
       - name: Upload vulnerability report
-        uses: github/codeql-action/upload-sarif@v2.1.28
+        uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
         with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
+          sarif_file: 'trivy-results-source-code.sarif'
+          category: source-code
+
       - name: Build
         run: |
           cd convention-server
           go build -v
+
   package:
     name: Package and Publish
     if: ${{ github.ref == 'refs/heads/main' }}
     needs: [ build ]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
       packages: write
       security-events: write
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v3.3.0
+
       - name: Set up Go
-        uses: actions/setup-go@v3.3.1
+        uses: actions/setup-go@v3.5.0
         with:
           go-version: 1.19
+
       - name: Log into container registry
         uses: docker/login-action@v2.1.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build container image
         run: |
           # Workaround for https://github.com/actions/runner-images/issues/6283
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           brew install buildpacks/tap/pack
           pack build ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }} --path convention-server --builder paketobuildpacks/builder:tiny
+
       - name: OCI image vulnerability scanning
-        uses: anchore/scan-action@v3.3.0
-        id: scan
+        uses: aquasecurity/trivy-action@master
         with:
-          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
-          fail-build: true
-          severity-cutoff: critical
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          format: 'sarif'
+          output: 'trivy-results-oci-image.sarif'
+          category: oci-image
+
       - name: Upload vulnerability report
-        uses: github/codeql-action/upload-sarif@v2.1.28
+        uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
         with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
+          sarif_file: 'trivy-results-oci-image.sarif'
+
       - name: Publish container image
         run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+
       - name: Publish container image (latest)
         run: |
           docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }} \
