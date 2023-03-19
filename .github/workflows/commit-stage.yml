@@ -15,10 +15,10 @@ jobs:
       security-events: write
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@v3.4.0
 
       - name: Set up Go
-        uses: actions/setup-go@v3.5.0
+        uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
 
@@ -53,10 +53,10 @@ jobs:
       security-events: write
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@v3.4.0
 
       - name: Set up Go
-        uses: actions/setup-go@v3.5.0
+        uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.19
 
@@ -67,12 +67,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+      
+      - name: Install pack
+        run: |
+          brew install buildpacks/tap/pack
+
       - name: Build container image
         run: |
-          # Workaround for https://github.com/actions/runner-images/issues/6283
-          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          brew install buildpacks/tap/pack
-          pack build ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }} --path convention-server --builder paketobuildpacks/builder:tiny
+          pack build ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }} --path convention-server --builder paketobuildpacks/builder-jammy-tiny
 
       - name: OCI image vulnerability scanning
         uses: aquasecurity/trivy-action@master
