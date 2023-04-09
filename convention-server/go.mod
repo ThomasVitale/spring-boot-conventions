@@ -1,4 +1,4 @@
-module github.com/arktonix/spring-boot-conventions/convention-server
+module github.com/kadras-io/spring-boot-conventions/convention-server
 
 go 1.20
 
