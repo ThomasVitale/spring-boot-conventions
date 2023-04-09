@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 	corev1 "k8s.io/api/core/v1"
 
-	"github.com/arktonix/spring-boot-conventions/convention-server/resources"
+	"github.com/kadras-io/spring-boot-conventions/convention-server/resources"
 	"github.com/vmware-tanzu/cartographer-conventions/webhook"
 )
 
