@@ -1,6 +1,6 @@
 module github.com/kadras-io/spring-boot-conventions/convention-server
 
-go 1.21
+go 1.20
 
 require (
 	github.com/CycloneDX/cyclonedx-go v0.7.1
