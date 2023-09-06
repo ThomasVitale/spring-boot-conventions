@@ -47,7 +47,8 @@ var SpringBootConventions = []Convention{
 			if target.Spec.TerminationGracePeriodSeconds != nil {
 				k8sGracePeriodSeconds = *target.Spec.TerminationGracePeriodSeconds
 			}
-			target.Spec.TerminationGracePeriodSeconds = &k8sGracePeriodSeconds
+			// Doesn't work with Knative Service. Leave the k8s default.
+			// target.Spec.TerminationGracePeriodSeconds = &k8sGracePeriodSeconds
 			// Allocate 80% of the Kubernetes grace period to Spring Boot.
 			bootGracePeriodSeconds := int(math.Floor(0.8 * float64(k8sGracePeriodSeconds)))
 			applicationProperties["server.lifecycle.timeout-per-shutdown-phase"] = fmt.Sprintf("%ds", bootGracePeriodSeconds)
