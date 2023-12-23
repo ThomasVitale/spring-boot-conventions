@@ -6,7 +6,7 @@
 [![Follow us on Twitter](https://img.shields.io/static/v1?label=Twitter&message=Follow&color=1DA1F2)](https://twitter.com/kadrasIO)
 
 > **Warning**
-> This repository has been archived since the upstream Cartographer Conventions project is not actively developer anymore. The Kadras conventions are now included in the [supply-chains](supply-chains) package.
+> This repository will be archived soon since the upstream Cartographer Conventions project is not actively developer anymore. The Kadras conventions are now included in the [supply-chains](supply-chains) package.
 
 A Convention Server that defines conventions for Spring Boot workloads that will be applied by the Convention Controller from the [Cartographer Conventions](https://github.com/vmware-tanzu/cartographer-conventions) project.
 
