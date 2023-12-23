@@ -5,6 +5,9 @@
 [![The Apache 2.0 license badge](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Follow us on Twitter](https://img.shields.io/static/v1?label=Twitter&message=Follow&color=1DA1F2)](https://twitter.com/kadrasIO)
 
+> **Warning**
+> This repository has been archived since the upstream Cartographer Conventions project is in de-facto maintenance mode. The Kadras conventions are now included in the [supply-chains](supply-chains) package.
+
 A Convention Server that defines conventions for Spring Boot workloads that will be applied by the Convention Controller from the [Cartographer Conventions](https://github.com/vmware-tanzu/cartographer-conventions) project.
 
 ## 🚀&nbsp; Conventions
